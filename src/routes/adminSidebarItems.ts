@@ -1,5 +1,8 @@
 
 // import Analytics from "@/pages/Admin/Analytics";
+import AllDrivers from "@/pages/Admin/AllDrivers";
+import AllRiders from "@/pages/Admin/AllRiders";
+import AllRides from "@/pages/Admin/AllRides";
 import { ISidebarItem } from "@/types";
 import { lazy } from "react";
 
@@ -16,24 +19,24 @@ export const adminSidebarItems: ISidebarItem[] = [
       },
     ],
   },
-  // {
-  //   title: "Tour Management",
-  //   items: [
-  //     {
-  //       title: "Add Tour Type",
-  //       url: "/admin/add-tour-type",
-  //       component: AddTourType,
-  //     },
-  //     {
-  //       title: "Add Tour",
-  //       url: "/admin/add-tour",
-  //       component: AddTour,
-  //     },
-  //     {
-  //       title: "Habi Jabi",
-  //       url: "/admin/habijabi",
-  //       component: AddTour,
-  //     },
-  //   ],
-  // },
+  {
+    title: "Ride Management",
+    items: [
+      {
+        title: "All Riders",
+        url: "/admin/allriders",
+        component: AllRiders,
+      },
+      {
+        title: "All Drivers",
+        url: "/admin/alldrivers",
+        component: AllDrivers,
+      },
+      {
+        title: "All Rides",
+        url: "/admin/allrides",
+        component: AllRides,
+      },
+    ],
+  },
 ];
