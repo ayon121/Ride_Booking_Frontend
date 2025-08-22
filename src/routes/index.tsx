@@ -12,6 +12,7 @@ import { withAuth } from "@/utils/withAuth";
 import Unauthorized from "@/pages/Unauthorized";
 import { role } from "@/constants/role";
 import { TRole } from "@/types";
+import { driverSidebarItems } from "./driverSidebarItems";
 
 export const router = createBrowserRouter([
   {
@@ -38,6 +39,14 @@ export const router = createBrowserRouter([
     children: [
       { index: true, element: <Navigate to="/user/myrides" /> },
       ...generateRoutes(userSidebarItems),
+    ],
+  },
+  {
+    Component: withAuth(DashboardLayout, role.driver as TRole),
+    path: "/driver",
+    children: [
+      { index: true, element: <Navigate to="/driver/myrides" /> },
+      ...generateRoutes(driverSidebarItems),
     ],
   },
   {
