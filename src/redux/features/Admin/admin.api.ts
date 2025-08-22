@@ -11,12 +11,13 @@ export const adminApi = baseApi.injectEndpoints({
       transformResponse: (response) => response.data,
     }),
     getAllRiders: builder.query({
-      query: () => ({
+      query: (params) => ({
         url: "/user/all-users",
         method: "GET",
+        params: params,
       }),
       providesTags: ["ADMIN"],
-      transformResponse: (response) => response.data,
+      transformResponse: (response) => response,
     }),
     getAllDriver: builder.query({
       query: (params) => ({
@@ -28,12 +29,13 @@ export const adminApi = baseApi.injectEndpoints({
       transformResponse: (response) => response,
     }),
     getAllRides: builder.query({
-      query: () => ({
+      query: (params) => ({
         url: "/rides/all",
         method: "GET",
+        params: params,
       }),
       providesTags: ["ADMIN"],
-      transformResponse: (response) => response.data,
+      transformResponse: (response) => response,
     }),
 
     //  Get Single Driver (Admin)
