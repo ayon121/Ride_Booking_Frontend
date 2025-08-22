@@ -3,6 +3,7 @@ import { useState } from "react";
 import { useGetAllRidersQuery } from "@/redux/features/Admin/admin.api";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import UpdateRiderModal from "@/components/layout/UpdateRiderModal";
 
 const AllRiders = () => {
     const [search, setSearch] = useState("");
@@ -19,8 +20,12 @@ const AllRiders = () => {
         to: to || undefined,
     });
 
-    const handleUpdate = async (rider: any) => {
-        console.log(rider);
+    const [selectedRider, setSelectedRider] = useState<any>(null);
+    const [isModalOpen, setIsModalOpen] = useState(false);
+
+    const handleUpdate = (rider: any) => {
+        setSelectedRider(rider);
+        setIsModalOpen(true);
     };
 
     if (isLoading) return <p className="text-center py-10">Loading riders...</p>;
@@ -78,7 +83,7 @@ const AllRiders = () => {
                                 <p><strong>Address:</strong> {rider.address ?? "N/A"}</p>
                                 <p><strong>Verified:</strong> {rider.isVerified ? "✅ Yes" : "❌ No"}</p>
                                 <p><strong>Created:</strong> {new Date(rider.createdAt).toLocaleDateString()}</p>
-                                
+
                                 <Button
                                     className="w-full mt-4"
                                     onClick={() => handleUpdate(rider)}
@@ -88,6 +93,15 @@ const AllRiders = () => {
                             </CardContent>
                         </Card>
                     ))
+                )}
+
+
+                {selectedRider && (
+                    <UpdateRiderModal
+                        rider ={selectedRider}
+                        isOpen={isModalOpen}
+                        onClose={() => setIsModalOpen(false)}
+                    />
                 )}
             </div>
 

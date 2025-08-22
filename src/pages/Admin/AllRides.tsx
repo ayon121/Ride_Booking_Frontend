@@ -78,12 +78,12 @@ const AllRides = () => {
                                 <p><strong>Driver:</strong> {ride?.driverId?.name} ({ride?.driverId?.email})</p>
                                 <p><strong>Created:</strong> {new Date(ride.createdAt).toLocaleDateString()}</p>
 
-                                <Button
+                                {/* <Button
                                     className="w-full mt-4"
                                     onClick={() => handleUpdate(ride)}
                                 >
                                     Update
-                                </Button>
+                                </Button> */}
                             </CardContent>
                         </Card>
                     ))

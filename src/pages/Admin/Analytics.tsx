@@ -7,6 +7,7 @@ import { Loader2, Users, Car, Wallet, Activity } from "lucide-react";
 export default function Analytics() {
   const { data, isLoading, isError } = useGetAdminAnalyticsQuery(undefined);
 
+  console.log(data);
   if (isLoading) {
     return (
       <div className="flex justify-center items-center h-64">
@@ -24,11 +25,11 @@ export default function Analytics() {
   }
 
   const stats = [
-    { label: "Total Users", value: data?.data.totalUsers, icon: Users },
-    { label: "Total Drivers", value: data?.data.totalDrivers, icon: Car },
-    { label: "Total Rides", value: data?.data.totalRides, icon: Activity },
-    { label: "Active Rides", value: data?.data.activeRides, icon: Activity },
-    { label: "Total Earnings", value: `$${data?.data.totalEarnings}`, icon: Wallet },
+    { label: "Total Users", value: data?.totalUsers  || 0, icon: Users },
+    { label: "Total Drivers", value: data?.totalDrivers || 0, icon: Car },
+    { label: "Total Rides", value: data?.totalRides || 0, icon: Activity },
+    { label: "Active Rides", value: data?.activeRides || 0, icon: Activity },
+    { label: "Total Earnings", value: `$${data?.totalEarnings || 0}`, icon: Wallet },
   ];
 
   return (
