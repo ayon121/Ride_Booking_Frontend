@@ -10,6 +10,14 @@ export const RiderApi = baseApi.injectEndpoints({
             providesTags: ["RIDES"],
             transformResponse: (response) => response,
         }),
+        getRideHistory: builder.query({
+            query: () => ({
+                url: "/rides/history",
+                method: "GET",
+            }),
+            providesTags: ["RIDES"],
+            transformResponse: (response) => response,
+        }),
         requestRide: builder.mutation({
             query: (rideData) => {
                 console.log("RTK Mutation payload going to backend:", rideData); // <-- Log here
@@ -36,4 +44,5 @@ export const {
     useGetMyRidesQuery,
     useRequestRideMutation,
     useUpdateRideStatusMutation,
+    useGetRideHistoryQuery,
 } = RiderApi;
