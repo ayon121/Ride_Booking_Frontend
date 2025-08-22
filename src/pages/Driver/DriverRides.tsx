@@ -5,6 +5,8 @@ import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { toast } from "react-toastify";
 import { axiosInstance } from "@/lib/axios";
+import { DriverApi } from "@/redux/features/Driver/driver.api";
+import { useAppDispatch } from "@/redux/hook";
 
 enum RideStatus {
   REQUESTED = "REQUESTED",
@@ -25,6 +27,7 @@ const validStatusFlow: Record<string, RideStatus> = {
 export default function DriverRides() {
   const { data, isLoading: ridesLoading, isError, refetch } = useGetMyRidesQuery(undefined);
   const [loadingId, setLoadingId] = useState<string | null>(null);
+  const dispatch = useAppDispatch();
 
   if (ridesLoading) return <p className="text-center py-10">Loading your rides...</p>;
   if (isError) return <p className="text-center py-10 text-red-500">Failed to fetch rides.</p>;
@@ -42,6 +45,7 @@ export default function DriverRides() {
       toast.success(`Ride updated to ${status}`);
       console.log("Ride status updated:", response.data);
       refetch();
+       dispatch(DriverApi.util.invalidateTags(["RIDES"]));
     } catch (error: any) {
       console.error("Update failed:", error);
       toast.error(error?.response?.data?.message || "Failed to update ride");
@@ -80,18 +84,18 @@ export default function DriverRides() {
                   <p><strong>Pickup OTP:</strong> {ride.pickupOtp}</p>
 
                   <div className="flex gap-2 mt-4">
-                    {/* Show next status button */}
+                    {/*  Show next status button */}
                     {nextStatus && (
                       <Button
                         onClick={() => handleUpdateStatus(ride._id, nextStatus)}
                         disabled={loadingId === ride._id}
-                        className="bg-blue-500 text-white"
+                        className="bg-foreground text-orange-400"
                       >
                         {loadingId === ride._id ? "Updating..." : `Mark as ${nextStatus}`}
                       </Button>
                     )}
 
-                    {/*  Allow cancel until completed/cancelled */}
+                    {/* Allow cancel until completed/cancelled */}
                     {ride.ridestatus !== RideStatus.COMPLETED &&
                       ride.ridestatus !== RideStatus.CANCELLED && (
                         <Button

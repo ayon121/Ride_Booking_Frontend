@@ -1,5 +1,6 @@
 
 
+import AllRides from "@/pages/Driver/AllRides";
 import DriverRides from "@/pages/Driver/DriverRides";
 import Profile from "@/pages/Profile";
 import RideHistory from "@/pages/RideHistory";
@@ -14,6 +15,11 @@ export const driverSidebarItems: ISidebarItem[] = [
         title: "My Rides",
         url: "/driver/myrides",
         component: DriverRides,
+      },
+      {
+        title: "All Requested Rides",
+        url: "/driver/allrides",
+        component: AllRides,
       },
       {
         title: "My Profile",
