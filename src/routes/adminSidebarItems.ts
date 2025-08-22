@@ -3,6 +3,7 @@
 import AllDrivers from "@/pages/Admin/AllDrivers";
 import AllRiders from "@/pages/Admin/AllRiders";
 import AllRides from "@/pages/Admin/AllRides";
+import Profile from "@/pages/Profile";
 import { ISidebarItem } from "@/types";
 import { lazy } from "react";
 
@@ -36,6 +37,11 @@ export const adminSidebarItems: ISidebarItem[] = [
         title: "All Rides",
         url: "/admin/allrides",
         component: AllRides,
+      },
+      {
+        title: "My Profile",
+        url: "/admin/profile",
+        component: Profile
       },
     ],
   },

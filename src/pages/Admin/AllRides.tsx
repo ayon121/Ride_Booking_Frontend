@@ -19,9 +19,9 @@ const AllRides = () => {
         to: to || undefined,
     });
 
-    const handleUpdate = async (ride: any) => {
-        console.log(ride);
-    };
+    // const handleUpdate = async (ride: any) => {
+    //     console.log(ride);
+    // };
 
     if (isLoading) return <p className="text-center py-10">Loading rides...</p>;
     if (isError) return <p className="text-center py-10 text-red-500">Failed to fetch rides.</p>;
