@@ -19,12 +19,13 @@ export const adminApi = baseApi.injectEndpoints({
       transformResponse: (response) => response.data,
     }),
     getAllDriver: builder.query({
-      query: () => ({
+      query: (params) => ({
         url: "/driver/alldrivers",
         method: "GET",
+        params: params,
       }),
       providesTags: ["ADMIN"],
-      transformResponse: (response) => response.data,
+      transformResponse: (response) => response,
     }),
     getAllRides: builder.query({
       query: () => ({
