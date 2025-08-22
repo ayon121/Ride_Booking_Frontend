@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
 import { Button } from "@/components/ui/button";
@@ -20,12 +21,14 @@ interface RequestRideModalProps {
   className?: string;
   isOpen: boolean;
   onClose: () => void;
+  refetch : any
 }
 
 export function RequestRideModal({
   className,
   isOpen,
   onClose,
+  refetch,
 }: RequestRideModalProps) {
   const form = useForm({
     defaultValues: {
@@ -40,6 +43,7 @@ export function RequestRideModal({
     try {
       const res = await axiosInstance.post("/rides/request", data); // ✅ API endpoint
       toast.success("Ride requested successfully!");
+      refetch()
       form.reset();
       onClose();
       console.log("Ride request response:", res.data);

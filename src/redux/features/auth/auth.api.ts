@@ -38,6 +38,14 @@ export const authApi = baseApi.injectEndpoints({
         data: userInfo,
       }),
     }),
+    updateRideStatus: builder.mutation({
+      query: ({ rideId, status }) => ({
+        url: `/rides/status/${rideId}`, 
+        method: "PATCH",
+        body:  status , 
+      }),
+      invalidatesTags: ["RIDER"],
+    }),
     sendOtp: builder.mutation<IResponse<null>, ISendOtp>({
       query: (userInfo) => ({
         url: "/otp/send",

@@ -7,7 +7,7 @@ export const RiderApi = baseApi.injectEndpoints({
                 url: "/rides/me",
                 method: "GET",
             }),
-            providesTags: ["RIDER"],
+            providesTags: ["RIDES"],
             transformResponse: (response) => response,
         }),
         requestRide: builder.mutation({
@@ -21,10 +21,19 @@ export const RiderApi = baseApi.injectEndpoints({
             },
             invalidatesTags: ["RIDER"],
         }),
+        updateRideStatus: builder.mutation({
+            query: ({ rideId, status }) => ({
+                url: `/rides/status/${rideId}`, // rideId in param
+                method: "PATCH",
+                body: { status }, // body with status
+            }),
+            invalidatesTags: ["RIDER"],
+        }),
     }),
 });
 
 export const {
     useGetMyRidesQuery,
     useRequestRideMutation,
+    useUpdateRideStatusMutation,
 } = RiderApi;
