@@ -1,55 +1,51 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
-"use client";
 
+import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
-import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from "@/components/ui/form";
+import { Form, FormField, FormItem, FormLabel, FormControl } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { axiosInstance } from "@/lib/axios";
-import { cn } from "@/lib/utils";
 import { FieldValues, SubmitHandler, useForm } from "react-hook-form";
 import { toast } from "sonner";
-
+import { axiosInstance } from "@/lib/axios";
 
 interface RequestRideModalProps {
-  className?: string;
   isOpen: boolean;
   onClose: () => void;
-  refetch : any
+  refetch: () => void;
 }
 
-export function RequestRideModal({
-  className,
-  isOpen,
-  onClose,
-  refetch,
-}: RequestRideModalProps) {
+export function RequestRideModal({ isOpen, onClose, refetch }: RequestRideModalProps) {
+  const RATE_PER_KM = 100;
+
   const form = useForm({
     defaultValues: {
       pickupLocation: "",
       dropLocation: "",
+      estimatedKm: 0,
       price: 0,
     },
   });
 
+  const [fare, setFare] = useState(0);
+
+  // Update fare whenever estimatedKm changes
+  useEffect(() => {
+    const estimatedKm = form.watch("estimatedKm") || 0;
+    const calculatedFare = estimatedKm * RATE_PER_KM;
+    setFare(calculatedFare);
+    form.setValue("price", calculatedFare);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [form.watch("estimatedKm") ]);
+
   const onSubmit: SubmitHandler<FieldValues> = async (data) => {
-    console.log("Submitting Ride Request:", data);
     try {
-      const res = await axiosInstance.post("/rides/request", data);
-      toast.success("Ride requested successfully!");
-      refetch()
+      await axiosInstance.post("/rides/request", data);
+      toast.success(`Ride requested successfully! Fare: ${data.price} TK`);
+      refetch();
       form.reset();
+      setFare(0);
       onClose();
-      console.log("Ride request response:", res.data);
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (err: any) {
-      console.error("Ride request error:", err);
       toast.error(err?.response?.data?.message || "Failed to request ride");
     }
   };
@@ -57,25 +53,12 @@ export function RequestRideModal({
   if (!isOpen) return null;
 
   return (
-    <div className={cn("p-6", className)}>
-      <h2 className="text-xl font-bold mb-4">Request a New Ride</h2>
+    <div className="p-6 space-y-4 max-w-4xl ">
+      <h2 className="text-xl font-bold text-foreground">Request a New Ride</h2>
 
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
-          <FormField
-            control={form.control}
-            name="dropLocation"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Drop Location</FormLabel>
-                <FormControl>
-                  <Input placeholder="Enter drop location" {...field} />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-
+          {/* Pickup Location */}
           <FormField
             control={form.control}
             name="pickupLocation"
@@ -85,30 +68,57 @@ export function RequestRideModal({
                 <FormControl>
                   <Input placeholder="Enter pickup location" {...field} />
                 </FormControl>
-                <FormMessage />
               </FormItem>
             )}
           />
 
+          {/* Drop Location */}
+          <FormField
+            control={form.control}
+            name="dropLocation"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Drop Location</FormLabel>
+                <FormControl>
+                  <Input placeholder="Enter drop location" {...field} />
+                </FormControl>
+              </FormItem>
+            )}
+          />
+
+          {/* Estimated Kilometers */}
+          <FormField
+            control={form.control}
+            name="estimatedKm"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Estimated Kilometers</FormLabel>
+                <FormControl>
+                  <Input type="number" min={0} {...field} />
+                </FormControl>
+              </FormItem>
+            )}
+          />
+
+          {/* Fare Display */}
           <FormField
             control={form.control}
             name="price"
-            render={({ field }) => (
+            render={() => (
               <FormItem>
-                <FormLabel>Price</FormLabel>
+                <FormLabel>Fare (TK)</FormLabel>
                 <FormControl>
-                  <Input type="number" placeholder="Enter price" {...field} />
+                  <Input value={fare} readOnly />
                 </FormControl>
-                <FormMessage />
               </FormItem>
             )}
           />
 
-          <div className="flex gap-2 justify-end">
+          <div className="flex justify-end gap-2">
             <Button variant="outline" onClick={onClose}>
               Cancel
             </Button>
-            <Button type="submit">Request Ride</Button>
+            <Button type="submit">Confirm Ride</Button>
           </div>
         </form>
       </Form>
