@@ -14,6 +14,7 @@ import { role } from "@/constants/role";
 import { TRole } from "@/types";
 import { driverSidebarItems } from "./driverSidebarItems";
 import Home from "@/pages/Home/Home";
+import FAQPage from "@/pages/FAQPage";
 
 export const router = createBrowserRouter([
   {
@@ -24,9 +25,14 @@ export const router = createBrowserRouter([
         Component: Home,
         path: "/",
       },
+
       {
         Component: About,
         path: "about",
+      },
+      {
+        Component: FAQPage,
+        path: "/faq",
       },
     ],
   },
