@@ -2,14 +2,18 @@
 "use client";
 
 import { axiosInstance } from "@/lib/axios";
+import { useUserInfoQuery } from "@/redux/features/auth/auth.api";
 import { DriverApi, useGetallRequestedRideQuery } from "@/redux/features/Driver/driver.api";
 import { useAppDispatch } from "@/redux/hook";
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
+import { Loader2, AlertCircle, WifiOff } from "lucide-react"
 
 import { useState } from "react";
 
 const AllRides = () => {
   const { data, isLoading, isError, refetch } = useGetallRequestedRideQuery(undefined);
-    const dispatch = useAppDispatch();
+  const { data: userdata } = useUserInfoQuery(undefined);
+  const dispatch = useAppDispatch();
 
   const [loadingRideId, setLoadingRideId] = useState<string | null>(null);
 
@@ -31,8 +35,42 @@ const AllRides = () => {
     }
   };
 
-  if (isLoading) return <p>Loading rides...</p>;
-  if (isError) return <p>Failed to load rides.</p>;
+  if (isLoading) {
+    return (
+      <Alert className="border-orange-500/40 text-orange-700 bg-orange-50 max-w-4xl">
+        <Loader2 className="h-5 w-5 animate-spin text-orange-600" />
+        <AlertTitle>Loading rides...</AlertTitle>
+        <AlertDescription>
+          Please wait while we fetch the latest ride requests for you.
+        </AlertDescription>
+      </Alert>
+    )
+  }
+
+  if (isError) {
+    return (
+      <Alert variant="destructive" >
+        <AlertCircle className="h-5 w-5 text-red-600" />
+        <AlertTitle>Failed to load rides</AlertTitle>
+        <AlertDescription>
+          Something went wrong while fetching ride data. Please try again later.
+        </AlertDescription>
+      </Alert>
+    )
+  }
+
+  if (!userdata?.data?.isOnline) {
+    return (
+      <Alert className="border-orange-500/40 text-orange-700 bg-muted max-w-4xl">
+        <WifiOff className="h-5 w-5 text-orange-600" />
+        <AlertTitle>Status Inactive</AlertTitle>
+        <AlertDescription className="text-foreground">
+          To see ride requests, please switch your status to <span className="font-semibold text-orange-700">Active</span>
+        </AlertDescription>
+      </Alert>
+    )
+  }
+
 
   return (
     <div className="p-6">
