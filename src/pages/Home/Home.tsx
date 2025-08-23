@@ -1,6 +1,7 @@
 import EmergencyContactBtn from "@/components/layout/EmergencyContactBtn";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Link } from "react-router";
 
 const Home = () => {
   return (
@@ -13,9 +14,11 @@ const Home = () => {
         <p className="text-lg text-muted-foreground max-w-2xl mx-auto mb-8">
           Book rides quickly, track drivers in real-time, and enjoy seamless payments — all in one app.
         </p>
-        <Button size="lg" className="rounded-full">
-          Book a Ride Now
-        </Button>
+        <Link to={'/login'}>
+          <Button size="lg" className="rounded-full">
+            Book a Ride Now
+          </Button>
+        </Link>
       </section>
 
       {/* Features Section */}
@@ -73,9 +76,12 @@ const Home = () => {
         <p className="text-muted-foreground mb-8 max-w-xl mx-auto">
           Join thousands of happy riders today and enjoy a faster, safer, and more affordable travel experience.
         </p>
-        <Button size="lg" className="rounded-full">
-          Get Started
-        </Button>
+
+        <Link to={'/login'}>
+          <Button size="lg" className="rounded-full">
+            Get Started
+          </Button>
+        </Link>
       </section>
 
       <EmergencyContactBtn></EmergencyContactBtn>

@@ -16,6 +16,7 @@ import { driverSidebarItems } from "./driverSidebarItems";
 import Home from "@/pages/Home/Home";
 import FAQPage from "@/pages/FAQPage";
 import Features from "@/pages/Features";
+import PrivacyPolicy from "@/pages/PrivacyPolicy";
 
 export const router = createBrowserRouter([
   {
@@ -38,6 +39,10 @@ export const router = createBrowserRouter([
       {
         Component: Features,
         path: "/features",
+      },
+      {
+        Component: PrivacyPolicy,
+        path: "/privacypolicy",
       },
     ],
   },
