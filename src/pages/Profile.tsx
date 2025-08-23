@@ -35,7 +35,6 @@ const Profile = () => {
 
   const user = data?.data;
 
-  console.log(user);
   if (!user) return <p className="text-center py-10">No profile data found.</p>;
 
   const handleResetPassword = async () => {
