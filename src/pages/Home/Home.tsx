@@ -1,3 +1,4 @@
+import EmergencyContactBtn from "@/components/layout/EmergencyContactBtn";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
@@ -76,6 +77,8 @@ const Home = () => {
           Get Started
         </Button>
       </section>
+
+      <EmergencyContactBtn></EmergencyContactBtn>
     </div>
   );
 };

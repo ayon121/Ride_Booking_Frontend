@@ -7,6 +7,7 @@ import {
   SidebarTrigger,
 } from "@/components/ui/sidebar";
 import { Outlet } from "react-router";
+import EmergencyContactBtn from "./EmergencyContactBtn";
 
 export default function DashboardLayout() {
   return (
@@ -23,6 +24,7 @@ export default function DashboardLayout() {
         <div className="flex flex-1 flex-col gap-4 p-4">
           <Outlet />
         </div>
+        <EmergencyContactBtn></EmergencyContactBtn>
       </SidebarInset>
     </SidebarProvider>
   );
