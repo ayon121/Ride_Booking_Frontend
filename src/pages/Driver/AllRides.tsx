@@ -8,8 +8,7 @@ import { useAppDispatch } from "@/redux/hook";
 import { useState } from "react";
 
 const AllRides = () => {
-  const { data, isLoading, isError, refetch } =
-    useGetallRequestedRideQuery(undefined);
+  const { data, isLoading, isError, refetch } = useGetallRequestedRideQuery(undefined);
     const dispatch = useAppDispatch();
 
   const [loadingRideId, setLoadingRideId] = useState<string | null>(null);

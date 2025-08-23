@@ -24,7 +24,7 @@ import { toast } from "sonner";
 import UpdateProfileModal from "@/components/layout/UpdateProfileModal";
 
 const Profile = () => {
-  const { data, isLoading, isError  , refetch} = useUserInfoQuery(undefined);
+  const { data, isLoading, isError, refetch } = useUserInfoQuery(undefined);
   const [oldPassword, setOldPassword] = useState("");
   const [newPassword, setNewPassword] = useState("");
   const [loading, setLoading] = useState(false);
@@ -35,6 +35,7 @@ const Profile = () => {
 
   const user = data?.data;
 
+  console.log(user);
   if (!user) return <p className="text-center py-10">No profile data found.</p>;
 
   const handleResetPassword = async () => {
@@ -77,6 +78,23 @@ const Profile = () => {
           <p><strong>Verified:</strong> {user.isVerified ? "Yes" : "No"}</p>
           <p><strong>Deleted:</strong> {user.isDelete ? "Yes" : "No"}</p>
           <p><strong>Ride History:</strong> {user.rideHistory?.length || 0} rides</p>
+          {
+            user?.vehicleModel && <p><strong>Vehicle Model :</strong> {user?.vehicleModel}</p>
+          }
+          {
+            user?.licenseNumber && <p><strong>License Number :</strong> {user?.licenseNumber}</p>
+          }
+          {
+            user?.driverlocation && <p><strong>Location:</strong> {user?.driverlocation}</p>
+          }
+          {
+            user?.vehiclePlate && <p><strong>Vehicle Plate: </strong> {user?.vehiclePlate}</p>
+          }
+          {
+            user?.vehicleType && <p><strong>Vehicle Type: </strong> {user?.vehicleType}</p>
+          }
+          
+
           <p><strong>Created At:</strong> {new Date(user.createdAt).toLocaleString()}</p>
           <p><strong>Updated At:</strong> {new Date(user.updatedAt).toLocaleString()}</p>
 
@@ -91,7 +109,7 @@ const Profile = () => {
 
           {/* ------------------ Buttons ------- */}
           <div className="flex gap-5 flex-row justify-center items-center">
-            <UpdateProfileModal user={user} refetch={refetch}/>
+            <UpdateProfileModal user={user} refetch={refetch} />
 
             {/* ShadCN Dialog for Reset Password */}
             <Dialog>

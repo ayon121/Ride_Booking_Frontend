@@ -1,6 +1,7 @@
 
 
 import AllRides from "@/pages/Driver/AllRides";
+import DriverAnalytics from "@/pages/Driver/DriverAnalytics";
 import DriverRides from "@/pages/Driver/DriverRides";
 import DriverStatus from "@/pages/Driver/DriverStatus";
 import Profile from "@/pages/Profile";
@@ -12,6 +13,11 @@ export const driverSidebarItems: ISidebarItem[] = [
   {
     title: "Driver Dashboard",
     items: [
+      {
+        title: "Analytics",
+        url: "/driver/analytics",
+        component: DriverAnalytics,
+      },
       {
         title: "My Rides",
         url: "/driver/myrides",

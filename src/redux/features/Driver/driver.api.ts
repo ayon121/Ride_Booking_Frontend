@@ -10,11 +10,20 @@ export const DriverApi = baseApi.injectEndpoints({
             providesTags: ["RIDES"],
             transformResponse: (response) => response,
         }),
+        getDriverAnalytics: builder.query({
+            query: () => ({
+                url: "/driver/analytics",
+                method: "GET",
+            }),
+            providesTags: ["DRIVER"],
+            transformResponse: (response) => response,
+        }),
        
         
     }),
 });
 
 export const {
-   useGetallRequestedRideQuery
+   useGetallRequestedRideQuery,
+   useGetDriverAnalyticsQuery,
 } = DriverApi;
