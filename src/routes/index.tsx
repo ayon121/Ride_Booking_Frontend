@@ -15,6 +15,7 @@ import { TRole } from "@/types";
 import { driverSidebarItems } from "./driverSidebarItems";
 import Home from "@/pages/Home/Home";
 import FAQPage from "@/pages/FAQPage";
+import Features from "@/pages/Features";
 
 export const router = createBrowserRouter([
   {
@@ -33,6 +34,10 @@ export const router = createBrowserRouter([
       {
         Component: FAQPage,
         path: "/faq",
+      },
+      {
+        Component: Features,
+        path: "/features",
       },
     ],
   },
