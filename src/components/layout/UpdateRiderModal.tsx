@@ -9,21 +9,28 @@ import {
   DialogFooter,
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
-import { useUpdateRiderMutation } from "@/redux/features/Admin/admin.api";
+import { axiosInstance } from "@/lib/axios";
+import { toast } from "sonner";
+
+
 
 interface UpdateRiderModalProps {
   rider: any;
   isOpen: boolean;
   onClose: () => void;
+  onSuccess?: () => void; 
+  refetch : any
 }
 
-const UpdateRiderModal = ({ rider, isOpen, onClose }: UpdateRiderModalProps) => {
-  const [formData, setFormData] = useState<any>({ ...rider });
-  const [updateRider, { isLoading }] = useUpdateRiderMutation();
+const UpdateRiderModal = ({ rider, isOpen, onClose, onSuccess , refetch}: UpdateRiderModalProps) => {
+  const [formData, setFormData] = useState<any>({});
+  const [loading, setLoading] = useState(false);
 
-  // keep state in sync when modal opens
+  // ✅ Sync rider info when modal opens
   useEffect(() => {
-    setFormData({ ...rider });
+    if (rider) {
+      setFormData({ ...rider });
+    }
   }, [rider]);
 
   const handleChange = (
@@ -38,13 +45,27 @@ const UpdateRiderModal = ({ rider, isOpen, onClose }: UpdateRiderModalProps) => 
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    console.log("Submitting rider data:", formData);
+    if (!rider?._id) return;
 
     try {
-      await updateRider({ userId: rider._id, ...formData }).unwrap();
+      setLoading(true);
+      const res = await axiosInstance.patch(
+        `/user/update-users/${rider._id}`,
+        formData,
+        { headers: { "Content-Type": "application/json" } }
+      );
+
+      toast.success("Rider updated successfully!");
+      refetch()
+      console.log("Rider update response:", res.data);
+
+      if (onSuccess) onSuccess(); 
       onClose();
-    } catch (err) {
+    } catch (err: any) {
       console.error("Failed to update rider:", err);
+      toast.error(err?.response?.data?.message || "Failed to update rider");
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -88,7 +109,7 @@ const UpdateRiderModal = ({ rider, isOpen, onClose }: UpdateRiderModalProps) => 
           {/* Status */}
           <div className="space-y-2">
             <h2 className="font-semibold text-lg">Status</h2>
-            <div className="flex flex-col gap-2">
+            <div className="flex flex-col gap-2 text-muted-foreground">
               <label>Active</label>
               <select
                 name="isActive"
@@ -101,7 +122,7 @@ const UpdateRiderModal = ({ rider, isOpen, onClose }: UpdateRiderModalProps) => 
               </select>
             </div>
 
-            <div className="flex flex-col gap-2">
+            <div className="flex flex-col gap-2 text-muted-foreground">
               <label>Verified</label>
               <select
                 name="isVerified"
@@ -117,10 +138,10 @@ const UpdateRiderModal = ({ rider, isOpen, onClose }: UpdateRiderModalProps) => 
 
           {/* Actions */}
           <DialogFooter className="flex justify-end gap-2">
-            <Button type="submit" disabled={isLoading}>
-              {isLoading ? "Updating..." : "Update"}
+            <Button type="submit" disabled={loading}>
+              {loading ? "Updating..." : "Update"}
             </Button>
-            <Button variant="outline" onClick={onClose}>
+            <Button variant="outline" onClick={onClose} type="button">
               Cancel
             </Button>
           </DialogFooter>

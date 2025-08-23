@@ -12,7 +12,7 @@ const AllRiders = () => {
     const [to, setTo] = useState("");
     const limit = 6; // items per page
 
-    const { data, isLoading, isError } = useGetAllRidersQuery({
+    const { data, isLoading, isError , refetch } = useGetAllRidersQuery({
         searchTerm: search || "",
         page: page || 1,
         limit: limit || 6,
@@ -101,6 +101,7 @@ const AllRiders = () => {
                         rider ={selectedRider}
                         isOpen={isModalOpen}
                         onClose={() => setIsModalOpen(false)}
+                        refetch = {refetch}
                     />
                 )}
             </div>

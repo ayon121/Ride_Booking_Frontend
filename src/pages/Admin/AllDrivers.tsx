@@ -12,7 +12,7 @@ const AllDrivers = () => {
     const [to, setTo] = useState("");
     const limit = 6; // items per page
 
-    const { data, isLoading, isError } = useGetAllDriverQuery({
+    const { data, isLoading, isError , refetch } = useGetAllDriverQuery({
         searchTerm: search,
         page,
         limit,
@@ -114,6 +114,7 @@ const AllDrivers = () => {
                         driver={selectedDriver}
                         isOpen={isModalOpen}
                         onClose={() => setIsModalOpen(false)}
+                        refetch={refetch}
                     />
                 )}
             </div>
