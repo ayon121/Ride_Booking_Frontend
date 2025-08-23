@@ -21,9 +21,10 @@ import { Input } from "@/components/ui/input";
 import { axiosInstance } from "@/lib/axios";
 import { role } from "@/constants/role";
 import { toast } from "sonner";
+import UpdateProfileModal from "@/components/layout/UpdateProfileModal";
 
 const Profile = () => {
-  const { data, isLoading, isError } = useUserInfoQuery(undefined);
+  const { data, isLoading, isError  , refetch} = useUserInfoQuery(undefined);
   const [oldPassword, setOldPassword] = useState("");
   const [newPassword, setNewPassword] = useState("");
   const [loading, setLoading] = useState(false);
@@ -87,51 +88,57 @@ const Profile = () => {
           <p><strong>Price :</strong> {user?.currentRide?.price || 'N/A'}</p>
           <p><strong>Paid :</strong> {user?.currentRide?.isPaid ? "Done" : 'Not Done'}</p>
 
-          {/* ShadCN Dialog for Reset Password */}
-          <Dialog>
-            <DialogTrigger asChild>
-              <Button variant="default" className="mt-4">
-                Reset Password
-              </Button>
-            </DialogTrigger>
-            <DialogContent className="sm:max-w-[400px]">
-              <DialogHeader>
-                <DialogTitle>Reset Password</DialogTitle>
-              </DialogHeader>
-              <div className="grid gap-4 py-4">
-                <Input
-                  type="password"
-                  placeholder="Old Password"
-                  value={oldPassword}
-                  onChange={(e) => setOldPassword(e.target.value)}
-                />
-                <Input
-                  type="password"
-                  placeholder="New Password"
-                  value={newPassword}
-                  onChange={(e) => setNewPassword(e.target.value)}
-                />
-              </div>
-              <DialogFooter className="flex justify-end gap-2">
-                <Button
-                  variant="outline"
-                  onClick={() => {
-                    setOldPassword("");
-                    setNewPassword("");
-                  }}
-                >
-                  Cancel
+
+          {/* ------------------ Buttons ------- */}
+          <div className="flex gap-5 flex-row justify-center items-center">
+            <UpdateProfileModal user={user} refetch={refetch}/>
+
+            {/* ShadCN Dialog for Reset Password */}
+            <Dialog>
+              <DialogTrigger asChild>
+                <Button variant="default" className="">
+                  Reset Password
                 </Button>
-                <Button
-                  onClick={handleResetPassword}
-                  disabled={loading}
-                  className="bg-foreground text-orange-400 hover:bg-muted-foreground"
-                >
-                  {loading ? "Updating..." : "Update Password"}
-                </Button>
-              </DialogFooter>
-            </DialogContent>
-          </Dialog>
+              </DialogTrigger>
+              <DialogContent className="sm:max-w-[400px]">
+                <DialogHeader>
+                  <DialogTitle>Reset Password</DialogTitle>
+                </DialogHeader>
+                <div className="grid gap-4 py-4">
+                  <Input
+                    type="password"
+                    placeholder="Old Password"
+                    value={oldPassword}
+                    onChange={(e) => setOldPassword(e.target.value)}
+                  />
+                  <Input
+                    type="password"
+                    placeholder="New Password"
+                    value={newPassword}
+                    onChange={(e) => setNewPassword(e.target.value)}
+                  />
+                </div>
+                <DialogFooter className="flex justify-end gap-2">
+                  <Button
+                    variant="outline"
+                    onClick={() => {
+                      setOldPassword("");
+                      setNewPassword("");
+                    }}
+                  >
+                    Cancel
+                  </Button>
+                  <Button
+                    onClick={handleResetPassword}
+                    disabled={loading}
+                    className="bg-foreground text-orange-400 hover:bg-muted-foreground"
+                  >
+                    {loading ? "Updating..." : "Update Password"}
+                  </Button>
+                </DialogFooter>
+              </DialogContent>
+            </Dialog>
+          </div>
         </CardContent>
       </Card>
     </div>
