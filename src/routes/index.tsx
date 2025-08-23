@@ -17,6 +17,7 @@ import Home from "@/pages/Home/Home";
 import FAQPage from "@/pages/FAQPage";
 import Features from "@/pages/Features";
 import PrivacyPolicy from "@/pages/PrivacyPolicy";
+import ContactPage from "@/pages/ContactPage";
 
 export const router = createBrowserRouter([
   {
@@ -43,6 +44,10 @@ export const router = createBrowserRouter([
       {
         Component: PrivacyPolicy,
         path: "/privacypolicy",
+      },
+      {
+        Component: ContactPage,
+        path: "/contactus",
       },
     ],
   },

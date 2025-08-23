@@ -1,5 +1,6 @@
 
 // import Analytics from "@/pages/Admin/Analytics";
+import AdminContactMessages from "@/pages/Admin/AdminContactMessages";
 import AllDrivers from "@/pages/Admin/AllDrivers";
 import AllRiders from "@/pages/Admin/AllRiders";
 import AllRides from "@/pages/Admin/AllRides";
@@ -37,6 +38,11 @@ export const adminSidebarItems: ISidebarItem[] = [
         title: "All Rides",
         url: "/admin/allrides",
         component: AllRides,
+      },
+      {
+        title: "Messages",
+        url: "/admin/messages",
+        component: AdminContactMessages
       },
       {
         title: "My Profile",

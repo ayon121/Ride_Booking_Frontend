@@ -37,7 +37,7 @@ const AllRides = () => {
 
   if (isLoading) {
     return (
-      <Alert className="border-orange-500/40 text-orange-700 bg-orange-50 max-w-4xl">
+      <Alert className="border-orange-500/40 text-orange-700 bg-muted max-w-4xl">
         <Loader2 className="h-5 w-5 animate-spin text-orange-600" />
         <AlertTitle>Loading rides...</AlertTitle>
         <AlertDescription>
@@ -50,7 +50,7 @@ const AllRides = () => {
   if (isError) {
     return (
       <Alert variant="destructive" >
-        <AlertCircle className="h-5 w-5 text-red-600" />
+        <AlertCircle className="h-5 w-5 text-red-600 bg-muted" />
         <AlertTitle>Failed to load rides</AlertTitle>
         <AlertDescription>
           Something went wrong while fetching ride data. Please try again later.
