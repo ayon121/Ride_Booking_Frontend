@@ -13,12 +13,17 @@ import Unauthorized from "@/pages/Unauthorized";
 import { role } from "@/constants/role";
 import { TRole } from "@/types";
 import { driverSidebarItems } from "./driverSidebarItems";
+import Home from "@/pages/Home/Home";
 
 export const router = createBrowserRouter([
   {
     Component: App,
     path: "/",
     children: [
+      {
+        Component: Home,
+        path: "/",
+      },
       {
         Component: About,
         path: "about",

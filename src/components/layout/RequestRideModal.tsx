@@ -41,7 +41,7 @@ export function RequestRideModal({
   const onSubmit: SubmitHandler<FieldValues> = async (data) => {
     console.log("Submitting Ride Request:", data);
     try {
-      const res = await axiosInstance.post("/rides/request", data); // ✅ API endpoint
+      const res = await axiosInstance.post("/rides/request", data);
       toast.success("Ride requested successfully!");
       refetch()
       form.reset();
