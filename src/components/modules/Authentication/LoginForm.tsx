@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { Button } from "@/components/ui/button";
 import {
   Form,
@@ -18,6 +19,7 @@ import { Link, useNavigate } from "react-router";
 import { toast } from "sonner";
 import { useState } from "react";
 
+
 export function LoginForm({
   className,
   ...props
@@ -27,24 +29,39 @@ export function LoginForm({
   const [userlogin] = useUserloginMutation();
   const [driverlogin] = useDriverloginMutation();
 
-  // 🔥 Track whether logging in as "rider" or "driver"
-  const [role, setRole] = useState<"rider" | "driver">("rider");
+  // Track whether logging in as "rider" or "driver"
+  const [formrole, setRole] = useState<"rider" | "driver">("rider");
 
   const onSubmit: SubmitHandler<FieldValues> = async (data) => {
     try {
       let res;
 
-      if (role === "rider") {
+      if (formrole === "rider") {
         res = await userlogin(data).unwrap();
       } else {
         res = await driverlogin(data).unwrap();
       }
 
+      console.log(res);
+
       if (res.success) {
-        toast.success(`Logged in successfully as ${role}`);
+        // Check for blocked/suspended/deleted
+        if (formrole === "driver" && res?.user?.isSuspended) {
+          toast.error("Your account is suspended. Contact support.");
+          navigate("/suspended");
+          return;
+        }
+
+        if (formrole === "rider" && res?.user?.isDelete) {
+          toast.error("Your account has been deleted. Contact support.");
+          navigate("/deleted");
+          return;
+        }
+
+        // Normal success
+        toast.success(`Logged in successfully as ${formrole}`);
         navigate("/");
       }
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (err: any) {
       console.error(err);
       toast.error(err?.data?.message || "Login failed");
@@ -64,14 +81,14 @@ export function LoginForm({
       <div className="flex gap-2 justify-center">
         <Button
           type="button"
-          variant={role === "rider" ? "default" : "outline"}
+          variant={formrole === "rider" ? "default" : "outline"}
           onClick={() => setRole("rider")}
         >
           Rider Login
         </Button>
         <Button
           type="button"
-          variant={role === "driver" ? "default" : "outline"}
+          variant={formrole === "driver" ? "default" : "outline"}
           onClick={() => setRole("driver")}
         >
           Driver Login
@@ -119,7 +136,7 @@ export function LoginForm({
             />
 
             <Button type="submit" className="w-full">
-              Login as {role === "rider" ? "Rider" : "Driver"}
+              Login as {formrole === "rider" ? "Rider" : "Driver"}
             </Button>
           </form>
         </Form>

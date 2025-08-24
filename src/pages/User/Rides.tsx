@@ -15,6 +15,7 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { toast } from "sonner";
+import EmergencyContactBtn from "@/components/layout/EmergencyContactBtn";
 
 export default function MyRides() {
   const { data, isLoading: ridesLoading, isError, refetch } =
@@ -199,6 +200,7 @@ export default function MyRides() {
           )}
         </DialogContent>
       </Dialog>
+       <EmergencyContactBtn></EmergencyContactBtn>
     </div>
   );
 }

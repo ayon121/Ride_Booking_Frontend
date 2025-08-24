@@ -18,6 +18,8 @@ import FAQPage from "@/pages/FAQPage";
 import Features from "@/pages/Features";
 import PrivacyPolicy from "@/pages/PrivacyPolicy";
 import ContactPage from "@/pages/ContactPage";
+import SuspendedPage from "@/pages/suspended";
+import DeletedPage from "@/pages/deleted";
 
 export const router = createBrowserRouter([
   {
@@ -48,6 +50,14 @@ export const router = createBrowserRouter([
       {
         Component: ContactPage,
         path: "/contactus",
+      },
+      {
+        Component: SuspendedPage,
+        path: "/suspended",
+      },
+      {
+        Component: DeletedPage,
+        path: "/deleted",
       },
     ],
   },

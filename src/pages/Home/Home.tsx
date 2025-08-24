@@ -1,4 +1,4 @@
-import EmergencyContactBtn from "@/components/layout/EmergencyContactBtn";
+
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Link } from "react-router";
@@ -84,7 +84,7 @@ const Home = () => {
         </Link>
       </section>
 
-      <EmergencyContactBtn></EmergencyContactBtn>
+  
     </div>
   );
 };
