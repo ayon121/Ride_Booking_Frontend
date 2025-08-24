@@ -1,9 +1,20 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { useState } from "react";
 import { useGetRideHistoryQuery } from "@/redux/features/Rider/rider.api";
-import { Loader2 } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
+
+// Skeleton for ride cards
+const RideCardSkeleton = () => (
+  <div className="border rounded-2xl shadow-sm p-4 flex flex-col space-y-2 animate-pulse">
+    <div className="h-4 bg-gray-300 rounded w-1/2"></div>
+    <div className="h-4 bg-gray-300 rounded w-1/3"></div>
+    <div className="h-4 bg-gray-300 rounded w-full"></div>
+    <div className="h-4 bg-gray-300 rounded w-full"></div>
+    <div className="h-4 bg-gray-300 rounded w-1/2"></div>
+    <div className="h-4 bg-gray-300 rounded w-1/4"></div>
+  </div>
+);
 
 const ITEMS_PER_PAGE = 5;
 
@@ -46,9 +57,13 @@ const RideHistory = () => {
 
   if (isLoading) {
     return (
-      <div className="flex justify-center items-center py-10">
-        <Loader2 className="w-6 h-6 animate-spin text-gray-500" />
-        <p className="ml-2 text-gray-500">Loading ride history...</p>
+      <div className="p-6">
+        <h2 className="text-xl font-bold mb-4">Ride History</h2>
+        <div className="grid md:grid-cols-2 gap-4">
+          {Array.from({ length: ITEMS_PER_PAGE }).map((_, idx) => (
+            <RideCardSkeleton key={idx} />
+          ))}
+        </div>
       </div>
     );
   }
@@ -65,7 +80,7 @@ const RideHistory = () => {
     <div className="p-6">
       <h2 className="text-xl font-bold mb-4">Ride History</h2>
 
-      <div className="flex flex-col  gap-3 mb-6">
+      <div className="flex flex-col gap-3 mb-6">
         <div className="flex flex-row gap-2.5">
           <Input
             placeholder="Search by location/driver"

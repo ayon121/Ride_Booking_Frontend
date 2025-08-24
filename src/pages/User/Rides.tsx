@@ -6,15 +6,12 @@ import { Button } from "@/components/ui/button";
 import { RequestRideModal } from "@/components/layout/RequestRideModal";
 import { toast } from "react-toastify";
 import { axiosInstance } from "@/lib/axios";
-
+import { Skeleton } from "@/components/ui/skeleton";
 
 export default function MyRides() {
   const { data, isLoading: ridesLoading, isError, refetch } = useGetMyRidesQuery(undefined);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [cancellingId, setCancellingId] = useState<string | null>(null);
-
-  if (ridesLoading) return <p className="text-center py-10">Loading your rides...</p>;
-  if (isError) return <p className="text-center py-10 text-red-500">Failed to fetch rides.</p>;
 
   const rides = data?.data ? [data.data] : [];
 
@@ -28,7 +25,7 @@ export default function MyRides() {
 
       toast.success("Ride cancelled successfully!");
       console.log("Ride cancelled:", response.data);
-      refetch(); 
+      refetch();
     } catch (error: any) {
       console.error("Cancel failed:", error);
       toast.error(error?.response?.data?.message || "Failed to cancel ride");
@@ -44,9 +41,39 @@ export default function MyRides() {
       </Button>
 
       {/* Request Ride Modal */}
-      <RequestRideModal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} refetch={refetch} />
+      <RequestRideModal
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+        refetch={refetch}
+      />
 
-      {rides.length === 0 ? (
+      {/* Loading skeleton */}
+      {ridesLoading ? (
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {Array.from({ length: 3 }).map((_, i) => (
+            <Card key={i} className="shadow-md rounded-2xl w-auto p-4 space-y-3">
+              <CardHeader>
+                <CardTitle className="flex justify-between items-center">
+                  <Skeleton className="h-4 w-32" />
+                  <Skeleton className="h-4 w-20" />
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-2">
+                <Skeleton className="h-4 w-40" />
+                <Skeleton className="h-4 w-36" />
+                <Skeleton className="h-4 w-24" />
+                <Skeleton className="h-4 w-32" />
+                <Skeleton className="h-4 w-48" />
+                <Skeleton className="h-4 w-40" />
+                <Skeleton className="h-4 w-36" />
+                <Skeleton className="h-8 w-28" />
+              </CardContent>
+            </Card>
+          ))}
+        </div>
+      ) : isError ? (
+        <p className="text-center py-10 text-red-500">Failed to fetch rides.</p>
+      ) : rides.length === 0 ? (
         <p className="text-center py-10">No rides found.</p>
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
