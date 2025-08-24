@@ -1,17 +1,31 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
+"use client";
+
 import { useGetMyRidesQuery } from "@/redux/features/Rider/rider.api";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { RequestRideModal } from "@/components/layout/RequestRideModal";
-import { toast } from "react-toastify";
 import { axiosInstance } from "@/lib/axios";
 import { Skeleton } from "@/components/ui/skeleton";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
+import { toast } from "sonner";
 
 export default function MyRides() {
-  const { data, isLoading: ridesLoading, isError, refetch } = useGetMyRidesQuery(undefined);
+  const { data, isLoading: ridesLoading, isError, refetch } =
+    useGetMyRidesQuery(undefined);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [cancellingId, setCancellingId] = useState<string | null>(null);
+
+  // Live location modal
+  const [locationUrl, setLocationUrl] = useState<string | null>(null);
+  const [activeRideId, setActiveRideId] = useState<string | null>(null);
+  const [sharingId, setSharingId] = useState<string | null>(null);
 
   const rides = data?.data ? [data.data] : [];
 
@@ -19,18 +33,41 @@ export default function MyRides() {
     try {
       setCancellingId(rideId);
 
-      const response = await axiosInstance.patch(`/rides/status/${rideId}`, {
+     await axiosInstance.patch(`/rides/status/${rideId}`, {
         status: "CANCELLED",
       });
 
       toast.success("Ride cancelled successfully!");
-      console.log("Ride cancelled:", response.data);
       refetch();
     } catch (error: any) {
-      console.error("Cancel failed:", error);
       toast.error(error?.response?.data?.message || "Failed to cancel ride");
     } finally {
       setCancellingId(null);
+    }
+  };
+
+  const handleShareLocation = (rideId: string) => {
+    setSharingId(rideId);
+    setActiveRideId(rideId);
+
+    if ("geolocation" in navigator) {
+      navigator.geolocation.getCurrentPosition(
+        (pos) => {
+          const { latitude, longitude } = pos.coords;
+          const shareUrl = `https://www.google.com/maps?q=${latitude},${longitude}`;
+          setLocationUrl(shareUrl);
+          setSharingId(null);
+        },
+        (err ) => {
+          console.log(err);
+          toast.error("Unable to fetch location. Please enable GPS.");
+          setSharingId(null);
+        },
+        { enableHighAccuracy: true }
+      );
+    } else {
+      toast.error("Geolocation not supported in this browser.");
+      setSharingId(null);
     }
   };
 
@@ -51,7 +88,10 @@ export default function MyRides() {
       {ridesLoading ? (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {Array.from({ length: 3 }).map((_, i) => (
-            <Card key={i} className="shadow-md rounded-2xl w-auto p-4 space-y-3">
+            <Card
+              key={i}
+              className="shadow-md rounded-2xl w-auto p-4 space-y-3"
+            >
               <CardHeader>
                 <CardTitle className="flex justify-between items-center">
                   <Skeleton className="h-4 w-32" />
@@ -59,14 +99,9 @@ export default function MyRides() {
                 </CardTitle>
               </CardHeader>
               <CardContent className="space-y-2">
-                <Skeleton className="h-4 w-40" />
-                <Skeleton className="h-4 w-36" />
-                <Skeleton className="h-4 w-24" />
-                <Skeleton className="h-4 w-32" />
-                <Skeleton className="h-4 w-48" />
-                <Skeleton className="h-4 w-40" />
-                <Skeleton className="h-4 w-36" />
-                <Skeleton className="h-8 w-28" />
+                {Array.from({ length: 8 }).map((_, j) => (
+                  <Skeleton key={j} className="h-4 w-40" />
+                ))}
               </CardContent>
             </Card>
           ))}
@@ -97,21 +132,73 @@ export default function MyRides() {
                 <p><strong>Completed At:</strong> {ride.completedAt ? new Date(ride.completedAt).toLocaleString() : "Not completed"}</p>
                 <p><strong>Pickup OTP:</strong> {ride.pickupOtp}</p>
 
-                {/* Show Cancel Button only if ride is still REQUESTED */}
-                {ride.ridestatus === "REQUESTED" && (
+                <div className="flex gap-2 mt-4">
+                  {/* Cancel Ride */}
+                  {ride.ridestatus === "REQUESTED" && (
+                    <Button
+                      onClick={() => handleCancel(ride._id)}
+                      disabled={cancellingId === ride._id}
+                      className="bg-red-500 text-white"
+                    >
+                      {cancellingId === ride._id
+                        ? "Cancelling..."
+                        : "Cancel Ride"}
+                    </Button>
+                  )}
+
+                  {/* Share Live Location */}
                   <Button
-                    onClick={() => handleCancel(ride._id)}
-                    disabled={cancellingId === ride._id}
-                    className="bg-red-500 text-white"
+                    onClick={() => handleShareLocation(ride._id)}
+                    disabled={sharingId === ride._id}
+                    className="bg-orange-500 text-white flex items-center gap-2"
                   >
-                    {cancellingId === ride._id ? "Cancelling..." : "Cancel Ride"}
+                    {sharingId === ride._id ? (
+                      <>
+                        <span className="h-4 w-4 animate-spin rounded-full border-2 border-white border-t-transparent" />
+                        Fetching...
+                      </>
+                    ) : (
+                      "Share Live Location"
+                    )}
                   </Button>
-                )}
+                </div>
               </CardContent>
             </Card>
           ))}
         </div>
       )}
+
+      {/* Live Location Modal */}
+      <Dialog open={!!locationUrl} onOpenChange={() => setLocationUrl(null)}>
+        <DialogContent className="rounded-2xl max-w-md">
+          <DialogHeader>
+            <DialogTitle className="text-orange-600 text-lg">
+               Share Your Live Location
+            </DialogTitle>
+          </DialogHeader>
+          {locationUrl ? (
+            <div className="space-y-4">
+              <p className="text-sm text-gray-500">
+                Ride Id: <span className="font-medium">{activeRideId}</span>
+              </p>
+              <div className="p-3 border rounded-xl bg-gray-50">
+                <p className="break-all text-sm text-gray-700">{locationUrl}</p>
+              </div>
+              <Button
+                onClick={() => {
+                  navigator.clipboard.writeText(locationUrl);
+                  toast.success("Copied to clipboard ");
+                }}
+                className="w-full bg-orange-500 hover:bg-amber-500"
+              >
+                Copy Link
+              </Button>
+            </div>
+          ) : (
+            <p className="text-center text-gray-500">Fetching location...</p>
+          )}
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }
