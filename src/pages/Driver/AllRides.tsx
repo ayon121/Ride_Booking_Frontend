@@ -5,8 +5,9 @@ import { axiosInstance } from "@/lib/axios";
 import { useUserInfoQuery } from "@/redux/features/auth/auth.api";
 import { DriverApi, useGetallRequestedRideQuery } from "@/redux/features/Driver/driver.api";
 import { useAppDispatch } from "@/redux/hook";
-import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
-import { Loader2, AlertCircle, WifiOff } from "lucide-react"
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+import { AlertCircle, WifiOff } from "lucide-react";
+import { Skeleton } from "@/components/ui/skeleton";
 
 import { useState } from "react";
 
@@ -35,28 +36,41 @@ const AllRides = () => {
     }
   };
 
+  // 🔹 Loading skeleton
   if (isLoading) {
     return (
-      <Alert className="border-orange-500/40 text-orange-700 bg-muted max-w-4xl">
-        <Loader2 className="h-5 w-5 animate-spin text-orange-600" />
-        <AlertTitle>Loading rides...</AlertTitle>
-        <AlertDescription>
-          Please wait while we fetch the latest ride requests for you.
-        </AlertDescription>
-      </Alert>
-    )
+      <div className="p-6">
+        <h1 className="text-xl font-bold mb-4">All Request Rides</h1>
+        <div className="grid gap-4">
+          {Array.from({ length: 3 }).map((_, i) => (
+            <div
+              key={i}
+              className="p-4 border rounded-lg shadow-md flex justify-between items-center"
+            >
+              <div className="space-y-2">
+                <Skeleton className="h-4 w-40" />
+                <Skeleton className="h-4 w-36" />
+                <Skeleton className="h-4 w-24" />
+                <Skeleton className="h-4 w-28" />
+              </div>
+              <Skeleton className="h-10 w-28 rounded-2xl" />
+            </div>
+          ))}
+        </div>
+      </div>
+    );
   }
 
   if (isError) {
     return (
-      <Alert variant="destructive" >
+      <Alert variant="destructive">
         <AlertCircle className="h-5 w-5 text-red-600 bg-muted" />
         <AlertTitle>Failed to load rides</AlertTitle>
         <AlertDescription>
           Something went wrong while fetching ride data. Please try again later.
         </AlertDescription>
       </Alert>
-    )
+    );
   }
 
   if (!userdata?.data?.isOnline) {
@@ -65,12 +79,12 @@ const AllRides = () => {
         <WifiOff className="h-5 w-5 text-orange-600" />
         <AlertTitle>Status Inactive</AlertTitle>
         <AlertDescription className="text-foreground">
-          To see ride requests, please switch your status to <span className="font-semibold text-orange-700">Active</span>
+          To see ride requests, please switch your status to{" "}
+          <span className="font-semibold text-orange-700">Active</span>
         </AlertDescription>
       </Alert>
-    )
+    );
   }
-
 
   return (
     <div className="p-6">

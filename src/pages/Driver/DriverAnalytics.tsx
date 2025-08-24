@@ -1,5 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Skeleton } from "@/components/ui/skeleton";
 import {
   ResponsiveContainer,
   BarChart,
@@ -14,12 +15,62 @@ import { useGetDriverAnalyticsQuery } from "@/redux/features/Driver/driver.api";
 const DriverAnalytics = () => {
   const { data, isLoading, isError } = useGetDriverAnalyticsQuery(undefined);
 
-  // Adjust if API returns { success, data }
   const analytics = data?.data || data;
 
-  if (isLoading) return <p className="text-center py-10">Loading analytics...</p>;
-  if (isError) return <p className="text-center py-10 text-red-500">Failed to load analytics.</p>;
-  if (!analytics) return <p className="text-center py-10">No analytics data available.</p>;
+  // 🔹 Loading skeleton
+  if (isLoading) {
+    return (
+      <div className="p-6 max-w-5xl space-y-6">
+        <h1 className="text-2xl font-bold text-foreground">Driver Analytics</h1>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          {/* Status Skeleton */}
+          <Card className="shadow-md rounded-2xl border border-border">
+            <CardHeader>
+              <Skeleton className="h-6 w-24" />
+            </CardHeader>
+            <CardContent className="space-y-3">
+              <Skeleton className="h-4 w-32" />
+              <Skeleton className="h-4 w-28" />
+            </CardContent>
+          </Card>
+
+          {/* Summary Skeleton */}
+          <Card className="shadow-md rounded-2xl border border-border">
+            <CardHeader>
+              <Skeleton className="h-6 w-24" />
+            </CardHeader>
+            <CardContent className="space-y-3">
+              <Skeleton className="h-4 w-36" />
+              <Skeleton className="h-4 w-36" />
+              <Skeleton className="h-4 w-28" />
+              <Skeleton className="h-4 w-28" />
+            </CardContent>
+          </Card>
+        </div>
+
+        {/* Chart Skeleton */}
+        <Card className="shadow-md rounded-2xl border border-border">
+          <CardHeader>
+            <Skeleton className="h-6 w-40" />
+          </CardHeader>
+          <CardContent>
+            <Skeleton className="h-[300px] w-full" />
+          </CardContent>
+        </Card>
+      </div>
+    );
+  }
+
+  if (isError)
+    return (
+      <p className="text-center py-10 text-red-500">
+        Failed to load analytics.
+      </p>
+    );
+
+  if (!analytics)
+    return <p className="text-center py-10">No analytics data available.</p>;
 
   const chartData = [
     { name: "Total Rides", value: analytics?.totalRides || 0 },
@@ -41,13 +92,19 @@ const DriverAnalytics = () => {
           <CardContent className="space-y-2">
             <p>
               <strong>Online:</strong>{" "}
-              <span className={analytics.isOnline ? "text-green-600" : "text-red-600"}>
+              <span
+                className={analytics.isOnline ? "text-green-600" : "text-red-600"}
+              >
                 {analytics.isOnline ? "Yes" : "No"}
               </span>
             </p>
             <p>
               <strong>On Ride:</strong>{" "}
-              <span className={analytics.currentRide ? "text-orange-500" : "text-gray-600"}>
+              <span
+                className={
+                  analytics.currentRide ? "text-orange-500" : "text-gray-600"
+                }
+              >
                 {analytics.currentRide ? "Yes" : "No"}
               </span>
             </p>
@@ -67,10 +124,12 @@ const DriverAnalytics = () => {
               <strong>Completed Rides:</strong> {analytics.completedRides || 0}
             </p>
             <p>
-              <strong>Earnings:</strong>  {analytics.earnings?.toFixed?.(2) || "0.00"} tk
+              <strong>Earnings:</strong>{" "}
+              {analytics.earnings?.toFixed?.(2) || "0.00"} tk
             </p>
             <p>
-              <strong>Rating:</strong> {analytics.rating?.toFixed?.(2) || "0.00"}
+              <strong>Rating:</strong>{" "}
+              {analytics.rating?.toFixed?.(2) || "0.00"}
             </p>
           </CardContent>
         </Card>
@@ -83,7 +142,10 @@ const DriverAnalytics = () => {
         </CardHeader>
         <CardContent>
           <ResponsiveContainer width="100%" height={300}>
-            <BarChart data={chartData} margin={{ top: 20, right: 30, left: 0, bottom: 5 }}>
+            <BarChart
+              data={chartData}
+              margin={{ top: 20, right: 30, left: 0, bottom: 5 }}
+            >
               <CartesianGrid strokeDasharray="3 3" stroke="#e5e7eb" />
               <XAxis dataKey="name" stroke="#6b7280" />
               <YAxis stroke="#6b7280" />
