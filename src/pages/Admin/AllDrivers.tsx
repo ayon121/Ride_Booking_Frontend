@@ -12,7 +12,7 @@ const AllDrivers = () => {
     const [to, setTo] = useState("");
     const limit = 6; // items per page
 
-    const { data, isLoading, isError , refetch } = useGetAllDriverQuery({
+    const { data, isLoading, isError, refetch } = useGetAllDriverQuery({
         searchTerm: search,
         page,
         limit,
@@ -95,8 +95,11 @@ const AllDrivers = () => {
                                 <p><strong>Plate:</strong> {driver.vehiclePlate}</p>
                                 <p><strong>Location:</strong> {driver.driverlocation}</p>
                                 <p><strong>Status:</strong> {driver.isActive ? "Active" : "Inactive"}</p>
+                                <p><strong>Account:</strong> {driver.isSuspended ? "Suspended" : "Not Suspended"}</p>
                                 <p><strong>Rides:</strong> {driver.totalRides}</p>
+                               
                                 <p><strong>Rating:</strong> {"⭐".repeat(Math.round(driver.rating))} ({driver.rating})</p>
+                               
 
                                 <Button
                                     className="w-full mt-4"

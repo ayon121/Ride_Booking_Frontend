@@ -134,6 +134,18 @@ const UpdateRiderModal = ({ rider, isOpen, onClose, onSuccess , refetch}: Update
                 <option value="false">Not Verified</option>
               </select>
             </div>
+            <div className="flex flex-col gap-2 text-muted-foreground">
+              <label>Deleted</label>
+              <select
+                name="isDelete"
+                value={formData.isDelete ? "true" : "false"}
+                onChange={handleChange}
+                className="border rounded-md p-2"
+              >
+                <option value="true">Deleted</option>
+                <option value="false">Not Deleted</option>
+              </select>
+            </div>
           </div>
 
           {/* Actions */}

@@ -92,6 +92,9 @@ const Profile = () => {
           {
             user?.vehicleType && <p><strong>Vehicle Type: </strong> {user?.vehicleType}</p>
           }
+          {
+            user?.isSuspended && <p><strong>Suspended: </strong> {user?.isSuspended ? 'Suspended' : 'Not Suspended'}</p>
+          }
           
 
           <p><strong>Created At:</strong> {new Date(user.createdAt).toLocaleString()}</p>

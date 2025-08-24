@@ -152,6 +152,18 @@ const UpdateDriverModal = ({ driver, isOpen, onClose, onSuccess  , refetch }: Up
                 <option value="false">Pending</option>
               </select>
             </div>
+            <div className="flex flex-col gap-2 text-muted-foreground">
+              <label>Suspendedl</label>
+              <select
+                name="isSuspended"
+                value={formData.isSuspended ? "true" : "false"}
+                onChange={handleChange}
+                className="border rounded-md p-2"
+              >
+                <option value="true">Suspended</option>
+                <option value="false">Not Suspended</option>
+              </select>
+            </div>
           </div>
 
           {/* Actions */}
