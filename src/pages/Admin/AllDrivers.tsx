@@ -5,6 +5,26 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import UpdateDriverModal from "@/components/layout/UpdateDriverModal";
 
+const SkeletonCard = () => (
+    <Card className="shadow-md rounded-2xl animate-pulse">
+        <CardHeader>
+            <CardTitle className="flex justify-between items-center">
+                <div className="h-4 bg-gray-300 rounded w-1/2"></div>
+                <div className="h-3 bg-gray-300 rounded w-1/4"></div>
+            </CardTitle>
+        </CardHeader>
+        <CardContent className="space-y-2">
+            <div className="h-3 bg-gray-300 rounded w-full"></div>
+            <div className="h-3 bg-gray-300 rounded w-full"></div>
+            <div className="h-3 bg-gray-300 rounded w-full"></div>
+            <div className="h-3 bg-gray-300 rounded w-full"></div>
+            <div className="h-3 bg-gray-300 rounded w-full"></div>
+            <div className="h-3 bg-gray-300 rounded w-1/2"></div>
+            <div className="h-8 bg-gray-300 rounded w-full mt-2"></div>
+        </CardContent>
+    </Card>
+);
+
 const AllDrivers = () => {
     const [search, setSearch] = useState("");
     const [page, setPage] = useState(1);
@@ -12,7 +32,7 @@ const AllDrivers = () => {
     const [to, setTo] = useState("");
     const limit = 6; // items per page
 
-    const { data, isLoading, isError, refetch } = useGetAllDriverQuery({
+    const { data, isLoading,isError , refetch } = useGetAllDriverQuery({
         searchTerm: search,
         page,
         limit,
@@ -28,14 +48,13 @@ const AllDrivers = () => {
         setIsModalOpen(true);
     };
 
-
-
-    if (isLoading) return <p className="text-center py-10">Loading drivers...</p>;
-    if (isError) return <p className="text-center py-10 text-red-500">Failed to fetch drivers.</p>;
-
     const drivers = data?.data || [];
     const meta = data?.meta;
 
+
+    if(isError) {
+        return <h1>There is a Error. Try Again!</h1>
+    }
     return (
         <div className="p-6">
             <h1 className="text-2xl font-bold mb-6">All Drivers</h1>
@@ -75,10 +94,11 @@ const AllDrivers = () => {
 
             {/* Drivers Grid */}
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                {drivers.length === 0 ? (
-                    <p className="col-span-full text-center py-10">No drivers found.</p>
-                ) : (
-                    drivers?.map((driver: any) => (
+                {isLoading
+                    ? Array.from({ length: limit }).map((_, idx) => <SkeletonCard key={idx} />)
+                    : drivers.length === 0
+                    ? <p className="col-span-full text-center py-10">No drivers found.</p>
+                    : drivers.map((driver: any) => (
                         <Card key={driver._id} className="shadow-md rounded-2xl">
                             <CardHeader>
                                 <CardTitle className="flex justify-between items-center">
@@ -97,9 +117,7 @@ const AllDrivers = () => {
                                 <p><strong>Status:</strong> {driver.isActive ? "Active" : "Inactive"}</p>
                                 <p><strong>Account:</strong> {driver.isSuspended ? "Suspended" : "Not Suspended"}</p>
                                 <p><strong>Rides:</strong> {driver.totalRides}</p>
-                               
                                 <p><strong>Rating:</strong> {"⭐".repeat(Math.round(driver.rating))} ({driver.rating})</p>
-                               
 
                                 <Button
                                     className="w-full mt-4"
@@ -110,7 +128,7 @@ const AllDrivers = () => {
                             </CardContent>
                         </Card>
                     ))
-                )}
+                }
 
                 {selectedDriver && (
                     <UpdateDriverModal

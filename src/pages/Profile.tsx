@@ -23,13 +23,36 @@ import { role } from "@/constants/role";
 import { toast } from "sonner";
 import UpdateProfileModal from "@/components/layout/UpdateProfileModal";
 
+// Skeleton for profile card
+const ProfileSkeleton = () => (
+  <Card className="shadow-md rounded-2xl animate-pulse max-w-4xl min-w-3xl">
+    <CardHeader>
+      <CardTitle className="h-6 bg-gray-300 rounded w-1/3 mb-4"></CardTitle>
+    </CardHeader>
+    <CardContent className="space-y-2">
+      {Array.from({ length: 10 }).map((_, idx) => (
+        <div key={idx} className="h-4 bg-gray-300 rounded w-full"></div>
+      ))}
+      <div className="mt-4 space-y-2">
+        {Array.from({ length: 5 }).map((_, idx) => (
+          <div key={idx} className="h-4 bg-gray-300 rounded w-full"></div>
+        ))}
+      </div>
+      <div className="flex gap-5 mt-6">
+        <div className="h-10 bg-gray-300 rounded w-1/2"></div>
+        <div className="h-10 bg-gray-300 rounded w-1/2"></div>
+      </div>
+    </CardContent>
+  </Card>
+);
+
 const Profile = () => {
   const { data, isLoading, isError, refetch } = useUserInfoQuery(undefined);
   const [oldPassword, setOldPassword] = useState("");
   const [newPassword, setNewPassword] = useState("");
   const [loading, setLoading] = useState(false);
 
-  if (isLoading) return <p className="text-center py-10">Loading profile...</p>;
+  if (isLoading) return <ProfileSkeleton />;
   if (isError)
     return <p className="text-center py-10 text-red-500">Failed to fetch profile.</p>;
 
@@ -63,7 +86,7 @@ const Profile = () => {
   };
 
   return (
-    <div className="p-6 max-w-4xl">
+    <div className="p-6 max-w-4xl ">
       <h1 className="text-2xl font-bold mb-6">My Profile</h1>
 
       <Card className="shadow-md rounded-2xl">
@@ -77,48 +100,29 @@ const Profile = () => {
           <p><strong>Verified:</strong> {user.isVerified ? "Yes" : "No"}</p>
           <p><strong>Deleted:</strong> {user.isDelete ? "Yes" : "No"}</p>
           <p><strong>Ride History:</strong> {user.rideHistory?.length || 0} rides</p>
-          {
-            user?.vehicleModel && <p><strong>Vehicle Model :</strong> {user?.vehicleModel}</p>
-          }
-          {
-            user?.licenseNumber && <p><strong>License Number :</strong> {user?.licenseNumber}</p>
-          }
-          {
-            user?.driverlocation && <p><strong>Location:</strong> {user?.driverlocation}</p>
-          }
-          {
-            user?.vehiclePlate && <p><strong>Vehicle Plate: </strong> {user?.vehiclePlate}</p>
-          }
-          {
-            user?.vehicleType && <p><strong>Vehicle Type: </strong> {user?.vehicleType}</p>
-          }
-          {
-            user?.isSuspended && <p><strong>Suspended: </strong> {user?.isSuspended ? 'Suspended' : 'Not Suspended'}</p>
-          }
-          
-
+          {user.vehicleModel && <p><strong>Vehicle Model :</strong> {user.vehicleModel}</p>}
+          {user.licenseNumber && <p><strong>License Number :</strong> {user.licenseNumber}</p>}
+          {user.driverlocation && <p><strong>Location:</strong> {user.driverlocation}</p>}
+          {user.vehiclePlate && <p><strong>Vehicle Plate: </strong> {user.vehiclePlate}</p>}
+          {user.vehicleType && <p><strong>Vehicle Type: </strong> {user.vehicleType}</p>}
+          {user.isSuspended && <p><strong>Suspended: </strong> {user.isSuspended ? 'Suspended' : 'Not Suspended'}</p>}
           <p><strong>Created At:</strong> {new Date(user.createdAt).toLocaleString()}</p>
           <p><strong>Updated At:</strong> {new Date(user.updatedAt).toLocaleString()}</p>
 
           <hr />
           <h1>Current Ride Info</h1>
-          <p><strong>DropLocation :</strong> {user?.currentRide?.dropLocation || 'N/A'}</p>
-          <p><strong>PaymentMethod :</strong> {user?.currentRide?.paymentMethod || 'N/A'}</p>
-          <p><strong>PickupLocation :</strong> {user?.currentRide?.pickupLocation || 'N/A'}</p>
-          <p><strong>Price :</strong> {user?.currentRide?.price || 'N/A'}</p>
-          <p><strong>Paid :</strong> {user?.currentRide?.isPaid ? "Done" : 'Not Done'}</p>
+          <p><strong>DropLocation :</strong> {user.currentRide?.dropLocation || 'N/A'}</p>
+          <p><strong>PaymentMethod :</strong> {user.currentRide?.paymentMethod || 'N/A'}</p>
+          <p><strong>PickupLocation :</strong> {user.currentRide?.pickupLocation || 'N/A'}</p>
+          <p><strong>Price :</strong> {user.currentRide?.price || 'N/A'}</p>
+          <p><strong>Paid :</strong> {user.currentRide?.isPaid ? "Done" : 'Not Done'}</p>
 
-
-          {/* ------------------ Buttons ------- */}
+          {/* Buttons */}
           <div className="flex gap-5 flex-row justify-center items-center">
             <UpdateProfileModal user={user} refetch={refetch} />
-
-            {/* ShadCN Dialog for Reset Password */}
             <Dialog>
               <DialogTrigger asChild>
-                <Button variant="default" className="">
-                  Reset Password
-                </Button>
+                <Button variant="default">Reset Password</Button>
               </DialogTrigger>
               <DialogContent className="sm:max-w-[400px]">
                 <DialogHeader>
@@ -139,13 +143,7 @@ const Profile = () => {
                   />
                 </div>
                 <DialogFooter className="flex justify-end gap-2">
-                  <Button
-                    variant="outline"
-                    onClick={() => {
-                      setOldPassword("");
-                      setNewPassword("");
-                    }}
-                  >
+                  <Button variant="outline" onClick={() => { setOldPassword(""); setNewPassword(""); }}>
                     Cancel
                   </Button>
                   <Button

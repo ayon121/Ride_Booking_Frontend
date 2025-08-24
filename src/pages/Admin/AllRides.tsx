@@ -4,12 +4,30 @@ import { useGetAllRidesQuery } from "@/redux/features/Admin/admin.api";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 
+// Skeleton for ride card
+const RideSkeletonCard = () => (
+    <Card className="shadow-md rounded-2xl animate-pulse">
+        <CardHeader>
+            <CardTitle className="flex justify-between items-center">
+                <div className="h-4 bg-gray-300 rounded w-2/3"></div>
+                <div className="h-3 bg-gray-300 rounded w-1/4"></div>
+            </CardTitle>
+        </CardHeader>
+        <CardContent className="space-y-2">
+            <div className="h-3 bg-gray-300 rounded w-full"></div>
+            <div className="h-3 bg-gray-300 rounded w-full"></div>
+            <div className="h-3 bg-gray-300 rounded w-full"></div>
+            <div className="h-3 bg-gray-300 rounded w-1/2"></div>
+        </CardContent>
+    </Card>
+);
+
 const AllRides = () => {
     const [search, setSearch] = useState("");
     const [page, setPage] = useState(1);
     const [from, setFrom] = useState("");
     const [to, setTo] = useState("");
-    const limit = 6; // items per page
+    const limit = 6;
 
     const { data, isLoading, isError } = useGetAllRidesQuery({
         searchTerm: search || "",
@@ -18,13 +36,6 @@ const AllRides = () => {
         from: from || undefined,
         to: to || undefined,
     });
-
-    // const handleUpdate = async (ride: any) => {
-    //     console.log(ride);
-    // };
-
-    if (isLoading) return <p className="text-center py-10">Loading rides...</p>;
-    if (isError) return <p className="text-center py-10 text-red-500">Failed to fetch rides.</p>;
 
     const rides = data?.data || [];
     const meta = data?.meta;
@@ -59,10 +70,16 @@ const AllRides = () => {
 
             {/* Rides Grid */}
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                {rides.length === 0 ? (
+                {isLoading ? (
+                    Array.from({ length: limit }).map((_, idx) => <RideSkeletonCard key={idx} />)
+                ) : isError ? (
+                    <p className="col-span-full text-center py-10 text-red-500">
+                        Failed to fetch rides.
+                    </p>
+                ) : rides.length === 0 ? (
                     <p className="col-span-full text-center py-10">No rides found.</p>
                 ) : (
-                    rides?.map((ride: any) => (
+                    rides.map((ride: any) => (
                         <Card key={ride._id} className="shadow-md rounded-2xl">
                             <CardHeader>
                                 <CardTitle className="flex justify-between items-center">
@@ -77,13 +94,6 @@ const AllRides = () => {
                                 <p><strong>Rider:</strong> {ride?.riderId?.name} ({ride?.riderId?.email})</p>
                                 <p><strong>Driver:</strong> {ride?.driverId?.name} ({ride?.driverId?.email})</p>
                                 <p><strong>Created:</strong> {new Date(ride.createdAt).toLocaleDateString()}</p>
-
-                                {/* <Button
-                                    className="w-full mt-4"
-                                    onClick={() => handleUpdate(ride)}
-                                >
-                                    Update
-                                </Button> */}
                             </CardContent>
                         </Card>
                     ))

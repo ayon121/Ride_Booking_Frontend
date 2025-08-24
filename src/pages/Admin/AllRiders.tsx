@@ -5,6 +5,25 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import UpdateRiderModal from "@/components/layout/UpdateRiderModal";
 
+// Skeleton card for riders
+const RiderSkeletonCard = () => (
+    <Card className="shadow-md rounded-2xl animate-pulse">
+        <CardHeader>
+            <CardTitle className="flex justify-between items-center">
+                <div className="h-4 bg-gray-300 rounded w-1/2"></div>
+                <div className="h-3 bg-gray-300 rounded w-1/4"></div>
+            </CardTitle>
+        </CardHeader>
+        <CardContent className="space-y-2">
+            <div className="h-3 bg-gray-300 rounded w-full"></div>
+            <div className="h-3 bg-gray-300 rounded w-full"></div>
+            <div className="h-3 bg-gray-300 rounded w-full"></div>
+            <div className="h-3 bg-gray-300 rounded w-1/2"></div>
+            <div className="h-8 bg-gray-300 rounded w-full mt-2"></div>
+        </CardContent>
+    </Card>
+);
+
 const AllRiders = () => {
     const [search, setSearch] = useState("");
     const [page, setPage] = useState(1);
@@ -12,7 +31,7 @@ const AllRiders = () => {
     const [to, setTo] = useState("");
     const limit = 6; // items per page
 
-    const { data, isLoading, isError , refetch } = useGetAllRidersQuery({
+    const { data, isLoading, isError, refetch } = useGetAllRidersQuery({
         searchTerm: search || "",
         page: page || 1,
         limit: limit || 6,
@@ -28,12 +47,12 @@ const AllRiders = () => {
         setIsModalOpen(true);
     };
 
-    if (isLoading) return <p className="text-center py-10">Loading riders...</p>;
-    if (isError) return <p className="text-center py-10 text-red-500">Failed to fetch riders.</p>;
-
     const riders = data?.data || [];
     const meta = data?.meta;
 
+    if(isError) {
+        return <h1>There is a Error. Try Again!</h1>
+    }
     return (
         <div className="p-6">
             <h1 className="text-2xl font-bold mb-6">All Riders</h1>
@@ -64,10 +83,11 @@ const AllRiders = () => {
 
             {/* Riders Grid */}
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                {riders.length === 0 ? (
-                    <p className="col-span-full text-center py-10">No riders found.</p>
-                ) : (
-                    riders?.map((rider: any) => (
+                {isLoading
+                    ? Array.from({ length: limit }).map((_, idx) => <RiderSkeletonCard key={idx} />)
+                    : riders.length === 0
+                    ? <p className="col-span-full text-center py-10">No riders found.</p>
+                    : riders.map((rider: any) => (
                         <Card key={rider._id} className="shadow-md rounded-2xl">
                             <CardHeader>
                                 <CardTitle className="flex justify-between items-center">
@@ -93,15 +113,14 @@ const AllRiders = () => {
                             </CardContent>
                         </Card>
                     ))
-                )}
-
+                }
 
                 {selectedRider && (
                     <UpdateRiderModal
-                        rider ={selectedRider}
+                        rider={selectedRider}
                         isOpen={isModalOpen}
                         onClose={() => setIsModalOpen(false)}
-                        refetch = {refetch}
+                        refetch={refetch}
                     />
                 )}
             </div>
