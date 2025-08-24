@@ -29,7 +29,7 @@ export default function Analytics() {
     { label: "Total Drivers", value: data?.totalDrivers || 0, icon: Car },
     { label: "Total Rides", value: data?.totalRides || 0, icon: Activity },
     { label: "Active Rides", value: data?.activeRides || 0, icon: Activity },
-    { label: "Total Earnings", value: `tk${data?.totalEarnings || 0}`, icon: Wallet },
+    { label: "Total Earnings", value: `${data?.totalEarnings || 0} tk`, icon: Wallet },
   ];
 
   return (

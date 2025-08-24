@@ -17,7 +17,7 @@ export default function EmergencyContactBtn() {
           </a>
         </TooltipTrigger>
         <TooltipContent>
-          <p>Emergency Contact (999)</p>
+          <p>Emergency Police Contact (999)</p>
         </TooltipContent>
       </Tooltip>
     </TooltipProvider>
