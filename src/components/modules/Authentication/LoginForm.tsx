@@ -18,6 +18,7 @@ import { FieldValues, SubmitHandler, useForm } from "react-hook-form";
 import { Link, useNavigate } from "react-router";
 import { toast } from "sonner";
 import { useState } from "react";
+import { role } from "@/constants/role";
 
 
 export function LoginForm({
@@ -42,17 +43,18 @@ export function LoginForm({
         res = await driverlogin(data).unwrap();
       }
 
-      console.log(res);
 
-      if (res.success) {
+      console.log(res.data);
+
+      if (res?.success) {
         // Check for blocked/suspended/deleted
-        if (formrole === "driver" && res?.user?.isSuspended) {
+        if (res?.data?.driver?.role === role.driver && res?.data?.driver?.isSuspended) {
           toast.error("Your account is suspended. Contact support.");
           navigate("/suspended");
           return;
         }
 
-        if (formrole === "rider" && res?.user?.isDelete) {
+        if (res?.data?.user?.role === role.user && res?.data?.user?.isDelete) {
           toast.error("Your account has been deleted. Contact support.");
           navigate("/deleted");
           return;
