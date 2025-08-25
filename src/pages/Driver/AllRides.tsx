@@ -96,6 +96,17 @@ const AllRides = () => {
       </Alert>
     );
   }
+  if (!userdata?.data?.isApproved) {
+    return (
+      <Alert className="border-orange-500/40 text-orange-700 bg-muted max-w-4xl">
+        <WifiOff className="h-5 w-5 text-orange-600" />
+        <AlertTitle>Your Account Is Not Approved </AlertTitle>
+        <AlertDescription className="text-foreground">
+          To see ride requests, please contact support.
+        </AlertDescription>
+      </Alert>
+    );
+  }
 
   return (
     <div className="p-6">
